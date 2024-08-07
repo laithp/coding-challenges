@@ -14,8 +14,10 @@ class CCWC {
     public $bytecount = 0;
 
     public $linesflag = false;
-    public $linescount = 0;
+    public $linecount = 0;
 
+    public $wordsflag = false;
+    public $wordcount = 0;
 
     function __construct($argc, $argv)
     {
@@ -38,13 +40,15 @@ class CCWC {
                 $this->bytecount = $this->get_bytecount($this->bytecount, $filestring);
             }
             if($this->linesflag){
-                $this->linescount = $this->get_linecount($this->linescount, $filestring);
+                $this->linecount = $this->get_linecount($this->linecount, $filestring);
             }
 
         }
         echo $this->bytecount;
         echo " ";
-        echo $this->linescount;
+        echo $this->linecount;
+        echo " ";
+        echo $this->wordcount;
         echo " ";
         echo $filename;
         /*
@@ -89,10 +93,27 @@ class CCWC {
         return $bytecount;
     }
 
-
-
-
+    function get_linecount($linecount, $filestring) {
+        // -l
+        //This function will open the file
+        // and by iterating over it and counting the number of newlines
+        // determine the number of lines in the file 
+        //
+        // expected result from cc test.txt = 7145 
+        //
+        // first pass I used strpos, however this resulted in an undercount when there are blank lines
+        //
+        // NOTE: - simpler way ? -
+        
+            $pieces = explode("\n",$filestring);
+            $linecount = $linecount + count($pieces) - 1 ; // subtracting 1 fixes for an overcount condition
     
+        return $linecount;
+    }
+
+
+
+
     function get_wordcount($filename) {
         // -w
         //This function will open the file and itterate
@@ -140,25 +161,7 @@ class CCWC {
         return $wordcount;
     }
 
-    function get_linecount($filename) {
-        // -l
-        //This function will open the file
-        // and by iterating over it and counting the number of newlines
-        // determine the number of lines in the file 
-        //
-        // expected result from cc test.txt = 7145 
-        //
-        // first pass I used strpos, however this resulted in an undercount when there are blank lines
-        //
-        // NOTE: - simpler way ? -
 
-        $linecount = 0;
-        while($str = fread($this->file,self::FILECHUNKSIZE)){
-            $pieces = explode("\n",$str);
-            $linecount = $linecount + count($pieces) - 1 ; // subtracting 1 fixes for an overcount condition
-        }
-        return $linecount;
-    }
 
 
     function php_get_bytecount($filename) {
