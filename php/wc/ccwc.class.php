@@ -8,6 +8,8 @@ class CCWC {
 
     const FILECHUNKSIZE = 100000;
 
+    public $file = null;
+
     function report_error($message){
         echo $message;
     }
@@ -23,6 +25,8 @@ class CCWC {
         }
         
         $filename = $argv[2];
+        $this->file = fopen($filename,"r");
+
         switch($argv[1]){
             case '-c': //bytes in file
             case '-m': //characters in file - my locale doesn't support multibyte 
@@ -58,10 +62,8 @@ class CCWC {
         // 
         // NOTE: - simpler way use str_word_count() ?
 
-        $fp = fopen($filename,"r");
-
         $wordcount = 0;
-        while($str = fread($fp,self::FILECHUNKSIZE)){
+        while($str = fread($this->file,self::FILECHUNKSIZE)){
             //need to handle rn type linefeeds
             $normalized_str = str_replace("\r\n","\n",$str);
 
@@ -90,10 +92,9 @@ class CCWC {
         //Simpler way using str_word_count()
         //
         // expected result from cc text.txt = 58164 
-        $fp = fopen($filename,"r");
 
         $wordcount = 0;
-        while($str = fread($fp,self::FILECHUNKSIZE)){
+        while($str = fread($this->file,self::FILECHUNKSIZE)){
             $wordcount += str_word_count($str);
         }
         return $wordcount;
@@ -111,10 +112,8 @@ class CCWC {
         //
         // NOTE: - simpler way ? -
 
-        $fp = fopen($filename,"r");
-
         $linecount = 0;
-        while($str = fread($fp,self::FILECHUNKSIZE)){
+        while($str = fread($this->file,self::FILECHUNKSIZE)){
             $pieces = explode("\n",$str);
             $linecount = $linecount + count($pieces) - 1 ; // subtracting 1 fixes for an overcount condition
         }
@@ -130,10 +129,8 @@ class CCWC {
         //
         // NOTE: a simple way to do it would be to just use the php internal filesize()
        
-        $fp = fopen($filename,"r");
-
         $bitecount = 0;
-        while($str = fread($fp,self::FILECHUNKSIZE)){
+        while($str = fread($this->file,self::FILECHUNKSIZE)){
             $bitecount += strlen($str);
         }
         return $bitecount;
