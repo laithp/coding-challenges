@@ -23,16 +23,19 @@ class CCWC {
     function __construct($argc, $argv)
     {
  
-        if($argc<3){
+        /*if($argc<3){
            $this->report_error(
             "ERROR: ccwc expects directive and file as parameters\n"
                 . "like: 'ccwc.php -c file.txt'\n");
             exit;
-        }
+        }*/
         
-        $this->parse_flags($argv[1]);
+        if($this->parse_flags($argv[1])){
+            $filename = $argv[2];
+        }else{
+            $filename = $argv[1];
+        }
 
-        $filename = $argv[2];
         $this->file = fopen($filename,"r");
         
         while($filestring = fread($this->file,self::FILECHUNKSIZE)){
@@ -82,20 +85,23 @@ class CCWC {
     }
 
     function parse_flags($param){
-        
-        $this->bytesflag = (strstr($param,'c'))?true:false; //bytes in file
-            $this->charsflag = (strstr($param,'m'))?true:false; //characters in file - my locale doesn't support multibyte
+        $hasparams = false;
+        if(substr($param,0,1)=='-'){
+            $this->bytesflag = (strstr($param,'c'))?true:false; //bytes in file
+                $this->charsflag = (strstr($param,'m'))?true:false; //characters in file - my locale doesn't support multibyte
 
-        $this->linesflag = (strstr($param,'l'))?true:false; //lines in file
+            $this->linesflag = (strstr($param,'l'))?true:false; //lines in file
 
-        $this->wordsflag = (strstr($param,'w'))?true:false; //words in file
+            $this->wordsflag = (strstr($param,'w'))?true:false; //words in file
+            $hasparams = true;
+        }
 
         if(!$this->bytesflag && !$this->linesflag && !$this->wordsflag && !$this->charsflag){
             $this->bytesflag = true;
             $this->linesflag = true;
             $this->wordsflag = true;
         }
-    
+        return $hasparams;
     }
 
     function get_bytecount($bytecount, $filestring) {
