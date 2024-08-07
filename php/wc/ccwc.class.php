@@ -23,9 +23,11 @@ class CCWC {
         $filename = $argv[2];
         switch($argv[1]){
             case '-c': //bytes in file
+            case '-m': //characters in file - my locale doesn't support multibyte 
                 echo $this->get_bytecount($filename);
                 break;
-            case '-cp': //bytes in file - direct php implemenation
+            case '-d': //bytes in file - direct php implemenation
+            case '-n': //characters in file - my locale doesn't support multibyte  - direct php implemenation
                 echo $this->php_get_bytecount($filename);
                 break;
             case '-l': //lines in file
@@ -34,7 +36,7 @@ class CCWC {
             case '-w': //words in file
                 echo $this->get_wordcount($filename);
                 break;
-            case '-wp': //words in file - direct php implemenation
+            case '-x': //words in file - direct php implemenation
                 echo $this->php_get_wordcount($filename);
                 break;
 
