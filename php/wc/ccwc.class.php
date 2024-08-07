@@ -75,7 +75,7 @@ class CCWC {
                         $wordcount++;
                     }
                 }
-                //$wordcount = $wordcount + count($words) - 1;
+                
             }
              
         }
