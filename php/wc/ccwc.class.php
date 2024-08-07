@@ -9,11 +9,13 @@ class CCWC {
     const FILECHUNKSIZE = 100000;
 
     public $file = null;
+
+    public $bytesflag = false;
     public $bytecount = 0;
 
-    function report_error($message){
-        echo $message;
-    }
+    public $linesflag = false;
+    public $linescount = 0;
+
 
     function __construct($argc, $argv)
     {
@@ -25,31 +27,31 @@ class CCWC {
             exit;
         }
         
+        $this->parse_flags($argv[1]);
+
         $filename = $argv[2];
         $this->file = fopen($filename,"r");
-        $bytesflag = true;
+        
         while($filestring = fread($this->file,self::FILECHUNKSIZE)){
 
-            if($bytesflag){
+            if($this->bytesflag){
                 $this->bytecount = $this->get_bytecount($this->bytecount, $filestring);
+            }
+            if($this->linesflag){
+                $this->linescount = $this->get_linecount($this->linescount, $filestring);
             }
 
         }
         echo $this->bytecount;
         echo " ";
+        echo $this->linescount;
+        echo " ";
         echo $filename;
         /*
         switch($argv[1]){
-            case '-c': //bytes in file
-            case '-m': //characters in file - my locale doesn't support multibyte 
-                echo $this->get_bytecount($filename);
-                break;
             case '-d': //bytes in file - direct php implemenation
             case '-n': //characters in file - my locale doesn't support multibyte  - direct php implemenation
                 echo $this->php_get_bytecount($filename);
-                break;
-            case '-l': //lines in file
-                echo $this->get_linecount($filename);
                 break;
             case '-w': //words in file
                 echo $this->get_wordcount($filename);
@@ -61,6 +63,16 @@ class CCWC {
             default:
                 $this->report_error("ERROR: directive not recognized\n");
         }*/
+        
+    }
+
+    function parse_flags($param){
+        echo $param;
+        $this->bytesflag = (strstr($param,'c'))?true:false; //bytes in file
+            $this->bytesflag = (strstr($param,'m'))?true:false; //characters in file - my locale doesn't support multibyte
+
+        $this->linesflag = (strstr($param,'l'))?true:false; //lines in file
+
         
     }
 
@@ -77,6 +89,10 @@ class CCWC {
         return $bytecount;
     }
 
+
+
+
+    
     function get_wordcount($filename) {
         // -w
         //This function will open the file and itterate
@@ -150,6 +166,10 @@ class CCWC {
         //
         // expected result from cc test.txt = 342190 
         return filesize($filename);
+    }
+
+    function report_error($message){
+        echo $message;
     }
 
 }
