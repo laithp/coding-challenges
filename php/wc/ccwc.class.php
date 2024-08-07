@@ -6,6 +6,8 @@
 
 class CCWC {
 
+    const FILECHUNKSIZE = 100000;
+
     function report_error($message){
         echo $message;
     }
@@ -48,6 +50,7 @@ class CCWC {
     }
 
     function get_wordcount($filename) {
+        // -w
         //This function will open the file and itterate
         // to get the wordcount
         //
@@ -58,7 +61,7 @@ class CCWC {
         $fp = fopen($filename,"r");
 
         $wordcount = 0;
-        while($str = fread($fp,10000)){
+        while($str = fread($fp,self::FILECHUNKSIZE)){
             //need to handle rn type linefeeds
             $normalized_str = str_replace("\r\n","\n",$str);
 
@@ -90,13 +93,14 @@ class CCWC {
         $fp = fopen($filename,"r");
 
         $wordcount = 0;
-        while($str = fread($fp,10000)){
+        while($str = fread($fp,self::FILECHUNKSIZE)){
             $wordcount += str_word_count($str);
         }
         return $wordcount;
     }
 
     function get_linecount($filename) {
+        // -l
         //This function will open the file
         // and by iterating over it and counting the number of newlines
         // determine the number of lines in the file 
@@ -110,7 +114,7 @@ class CCWC {
         $fp = fopen($filename,"r");
 
         $linecount = 0;
-        while($str = fread($fp,1000)){
+        while($str = fread($fp,self::FILECHUNKSIZE)){
             $pieces = explode("\n",$str);
             $linecount = $linecount + count($pieces) - 1 ; // subtracting 1 fixes for an overcount condition
         }
@@ -118,6 +122,7 @@ class CCWC {
     }
 
     function get_bytecount($filename) {
+        // -c
         //This function will open the file 
         // and by iterating over it get the number of bytes
         //
@@ -128,7 +133,7 @@ class CCWC {
         $fp = fopen($filename,"r");
 
         $bitecount = 0;
-        while($str = fread($fp,1000)){
+        while($str = fread($fp,self::FILECHUNKSIZE)){
             $bitecount += strlen($str);
         }
         return $bitecount;
