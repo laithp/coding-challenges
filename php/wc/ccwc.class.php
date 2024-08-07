@@ -25,18 +25,73 @@ class CCWC {
             case '-c': //bytes in file
                 echo $this->get_bytecount($filename);
                 break;
-            case '-cp': //direct php implemenation
+            case '-cp': //bytes in file - direct php implemenation
                 echo $this->php_get_bytecount($filename);
                 break;
             case '-l': //lines in file
                 echo $this->get_linecount($filename);
                 break;
-     
+            case '-w': //words in file
+                echo $this->get_wordcount($filename);
+                break;
+            case '-wp': //words in file - direct php implemenation
+                echo $this->php_get_wordcount($filename);
+                break;
+
             default:
                 $this->report_error("ERROR: directive not recognized\n");
         }
         echo " ";
         echo $filename;
+    }
+
+    function get_wordcount($filename) {
+        //This function will open the file and itterate
+        // to get the wordcount
+        //
+        // expected result from cc text.txt = 58164 
+        // 
+        // NOTE: - simpler way use str_word_count() ?
+
+        $fp = fopen($filename,"r");
+
+        $wordcount = 0;
+        while($str = fread($fp,10000)){
+            //need to handle rn type linefeeds
+            $normalized_str = str_replace("\r\n","\n",$str);
+
+            //need to handle r alone if it happens ?
+            $clean_normalized_str = str_replace("\r","\n",$normalized_str);
+
+            //clear out newlines
+            $newlines_removed_str = str_replace("\n"," ",$clean_normalized_str);
+
+            if(strlen($newlines_removed_str)>0){ 
+                $words = explode(" ",$newlines_removed_str);
+                foreach($words as $word){
+                    if(strlen($word)>0){
+                        $wordcount++;
+                    }
+                }
+                //$wordcount = $wordcount + count($words) - 1;
+            }
+             
+        }
+        return $wordcount;
+
+    }
+
+    function php_get_wordcount($filename) {
+        //Simpler way using str_word_count()
+        //
+        // expected result from cc text.txt = 58164 
+        $fp = fopen($filename,"r");
+
+        $wordcount = 0;
+        while($str = fread($fp,10000)){
+            $wordcount += str_word_count($str);
+        }
+        return $wordcount;
     }
 
     function get_linecount($filename) {
