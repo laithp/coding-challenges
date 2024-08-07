@@ -9,6 +9,7 @@ class CCWC {
     const FILECHUNKSIZE = 100000;
 
     public $file = null;
+    public $bytecount = 0;
 
     function report_error($message){
         echo $message;
@@ -26,7 +27,18 @@ class CCWC {
         
         $filename = $argv[2];
         $this->file = fopen($filename,"r");
+        $bytesflag = true;
+        while($filestring = fread($this->file,self::FILECHUNKSIZE)){
 
+            if($bytesflag){
+                $this->bytecount = $this->get_bytecount($this->bytecount, $filestring);
+            }
+
+        }
+        echo $this->bytecount;
+        echo " ";
+        echo $filename;
+        /*
         switch($argv[1]){
             case '-c': //bytes in file
             case '-m': //characters in file - my locale doesn't support multibyte 
@@ -48,9 +60,21 @@ class CCWC {
 
             default:
                 $this->report_error("ERROR: directive not recognized\n");
-        }
-        echo " ";
-        echo $filename;
+        }*/
+        
+    }
+
+    function get_bytecount($bytecount, $filestring) {
+        // -c
+        //This function will open the file 
+        // and by iterating over it get the number of bytes
+        //
+        // expected result from cc test.txt = 342190 
+        //
+        // NOTE: a simple way to do it would be to just use the php internal filesize()
+    
+        $bytecount += strlen($filestring);
+        return $bytecount;
     }
 
     function get_wordcount($filename) {
@@ -120,21 +144,6 @@ class CCWC {
         return $linecount;
     }
 
-    function get_bytecount($filename) {
-        // -c
-        //This function will open the file 
-        // and by iterating over it get the number of bytes
-        //
-        // expected result from cc test.txt = 342190 
-        //
-        // NOTE: a simple way to do it would be to just use the php internal filesize()
-       
-        $bitecount = 0;
-        while($str = fread($this->file,self::FILECHUNKSIZE)){
-            $bitecount += strlen($str);
-        }
-        return $bitecount;
-    }
 
     function php_get_bytecount($filename) {
         //simpler using filesize()
