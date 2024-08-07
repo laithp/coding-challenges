@@ -12,6 +12,7 @@ class CCWC {
 
     public $bytesflag = false;
     public $bytecount = 0;
+        public $charsflag = false;
 
     public $linesflag = false;
     public $linecount = 0;
@@ -36,20 +37,30 @@ class CCWC {
         
         while($filestring = fread($this->file,self::FILECHUNKSIZE)){
 
-            if($this->bytesflag){
+            if($this->bytesflag || $this->charsflag){
                 $this->bytecount = $this->get_bytecount($this->bytecount, $filestring);
             }
             if($this->linesflag){
                 $this->linecount = $this->get_linecount($this->linecount, $filestring);
             }
+            if($this->wordsflag){
+                $this->wordcount = $this->get_wordcount($this->wordcount, $filestring);
+            }
 
         }
-        echo $this->bytecount;
-        echo " ";
-        echo $this->linecount;
-        echo " ";
-        echo $this->wordcount;
-        echo " ";
+
+        if($this->bytesflag || $this->charsflag){
+            echo $this->bytecount;
+            echo " ";
+        }
+        if($this->linesflag){
+            echo $this->linecount;
+            echo " ";
+        }
+        if($this->wordsflag){
+            echo $this->wordcount;
+            echo " ";
+        }
         echo $filename;
         /*
         switch($argv[1]){
@@ -71,13 +82,20 @@ class CCWC {
     }
 
     function parse_flags($param){
-        echo $param;
+        
         $this->bytesflag = (strstr($param,'c'))?true:false; //bytes in file
-            $this->bytesflag = (strstr($param,'m'))?true:false; //characters in file - my locale doesn't support multibyte
+            $this->charsflag = (strstr($param,'m'))?true:false; //characters in file - my locale doesn't support multibyte
 
         $this->linesflag = (strstr($param,'l'))?true:false; //lines in file
 
-        
+        $this->wordsflag = (strstr($param,'w'))?true:false; //words in file
+
+        if(!$this->bytesflag && !$this->linesflag && !$this->wordsflag && !$this->charsflag){
+            $this->bytesflag = true;
+            $this->linesflag = true;
+            $this->wordsflag = true;
+        }
+    
     }
 
     function get_bytecount($bytecount, $filestring) {
@@ -111,10 +129,7 @@ class CCWC {
         return $linecount;
     }
 
-
-
-
-    function get_wordcount($filename) {
+    function get_wordcount($wordcount, $filestring) {
         // -w
         //This function will open the file and itterate
         // to get the wordcount
@@ -123,10 +138,9 @@ class CCWC {
         // 
         // NOTE: - simpler way use str_word_count() ?
 
-        $wordcount = 0;
-        while($str = fread($this->file,self::FILECHUNKSIZE)){
+        
             //need to handle rn type linefeeds
-            $normalized_str = str_replace("\r\n","\n",$str);
+            $normalized_str = str_replace("\r\n","\n",$filestring);
 
             //need to handle r alone if it happens ?
             $clean_normalized_str = str_replace("\r","\n",$normalized_str);
@@ -144,11 +158,11 @@ class CCWC {
                 
             }
              
-        }
         return $wordcount;
 
     }
 
+    //direct php call methods
     function php_get_wordcount($filename) {
         //Simpler way using str_word_count()
         //
@@ -160,9 +174,6 @@ class CCWC {
         }
         return $wordcount;
     }
-
-
-
 
     function php_get_bytecount($filename) {
         //simpler using filesize()
