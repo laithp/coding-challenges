@@ -1,0 +1,5 @@
+I will be implementing the "Build Your Own wc Tool" (https://codingchallenges.fyi/challenges/challenge-wc) here.
+
+There are several spots where I am going to deliberately take longer routes to implement when there is a simpler way in PHP to do it.
+My intent is to document these spots but still use the more verbose way first to logic through "how would I do this in this language" 
+Later refactoring to leverage built in functions is on my roadmap, however my main intent is to logic it out
