@@ -22,18 +22,21 @@ class CCWC {
 
     function __construct($argc, $argv)
     {
- 
-        /*if($argc<3){
-           $this->report_error(
-            "ERROR: ccwc expects directive and file as parameters\n"
-                . "like: 'ccwc.php -c file.txt'\n");
-            exit;
-        }*/
-        
-        if($this->parse_flags($argv[1])){
-            $filename = $argv[2];
+        echo $argc."\n";
+
+        if($argc<2){
+            //$filename = $argv[2];
+            die('stdin file expected');
+        }elseif($argc<3){
+            if($this->parse_flags($argv[1])){
+                //$filename = $argv[2];
+                die('stdin file expected!');
+            }else{
+                $filename = $argv[1];
+            } 
         }else{
-            $filename = $argv[1];
+            $this->parse_flags($argv[1]);
+                $filename = $argv[2];
         }
 
         $this->file = fopen($filename,"r");
