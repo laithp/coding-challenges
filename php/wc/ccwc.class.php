@@ -41,7 +41,8 @@ class CCWC {
 
         $this->file = fopen($filename,"r");
         
-        while($filestring = fread($this->file,self::FILECHUNKSIZE)){
+        while($filestring = fgets($this->file)){
+        //while($filestring = fread($this->file,self::FILECHUNKSIZE)){
 
             if($this->bytesflag || $this->charsflag){
                 $this->bytecount = $this->get_bytecount($this->bytecount, $filestring);
@@ -56,34 +57,22 @@ class CCWC {
         }
 
         if($this->bytesflag || $this->charsflag){
+            echo "-c returns 342190\n";
             echo $this->bytecount;
             echo " ";
         }
         if($this->linesflag){
+            echo "-l returns 7145\n";
             echo $this->linecount;
             echo " ";
         }
         if($this->wordsflag){
+            echo "-w returns 58164\n";
             echo $this->wordcount;
             echo " ";
         }
         echo $filename;
-        /*
-        switch($argv[1]){
-            case '-d': //bytes in file - direct php implemenation
-            case '-n': //characters in file - my locale doesn't support multibyte  - direct php implemenation
-                echo $this->php_get_bytecount($filename);
-                break;
-            case '-w': //words in file
-                echo $this->get_wordcount($filename);
-                break;
-            case '-x': //words in file - direct php implemenation
-                echo $this->php_get_wordcount($filename);
-                break;
-
-            default:
-                $this->report_error("ERROR: directive not recognized\n");
-        }*/
+       
         
     }
 
