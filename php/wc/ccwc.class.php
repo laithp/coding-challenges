@@ -22,24 +22,22 @@ class CCWC {
 
     function __construct($argc, $argv)
     {
-       // echo $argc."\n";
 
         if($argc<2){
-            //$filename = $argv[2];
-            die('stdin file expected');
+            $this->set_all_flags();
+            $this->file = STDIN;
         }elseif($argc<3){
             if($this->parse_flags($argv[1])){
-                //$filename = $argv[2];
-                die('stdin file expected!');
+                $this->file = STDIN;
             }else{
-                $filename = $argv[1];
+                $this->file = fopen($argv[1],"r");
             } 
         }else{
             $this->parse_flags($argv[1]);
-                $filename = $argv[2];
+            $this->file = fopen($argv[2],"r");
         }
 
-        $this->file = fopen($filename,"r");
+        //$this->file = fopen($filename,"r");
         
         while($filestring = fgets($this->file)){
         //while($filestring = fread($this->file,self::FILECHUNKSIZE)){
@@ -52,26 +50,24 @@ class CCWC {
             }
             if($this->wordsflag){
                 $this->wordcount = $this->get_wordcount($this->wordcount, $filestring);
+                //$this->wordcount = $this->php_get_wordcount($this->wordcount, $filestring);
             }
 
         }
 
         if($this->bytesflag || $this->charsflag){
-            echo "-c returns 342190\n";
             echo $this->bytecount;
             echo " ";
         }
         if($this->linesflag){
-            echo "-l returns 7145\n";
             echo $this->linecount;
             echo " ";
         }
         if($this->wordsflag){
-            echo "-w returns 58164\n";
             echo $this->wordcount;
             echo " ";
         }
-        echo $filename;
+        //echo $filename;
        
         
     }
@@ -89,11 +85,15 @@ class CCWC {
         }
 
         if(!$this->bytesflag && !$this->linesflag && !$this->wordsflag && !$this->charsflag){
-            $this->bytesflag = true;
-            $this->linesflag = true;
-            $this->wordsflag = true;
+            $this->set_all_flags();
         }
         return $hasparams;
+    }
+
+    function set_all_flags(){
+        $this->bytesflag = true;
+        $this->linesflag = true;
+        $this->wordsflag = true;
     }
 
     function get_bytecount($bytecount, $filestring) {
@@ -137,20 +137,10 @@ class CCWC {
         // 
         // NOTE: - simpler way use str_word_count() ?
 
-        
-            //need to handle rn type linefeeds
-            $normalized_str = str_replace("\r\n","\n",$filestring);
-
-            //need to handle r alone if it happens ?
-            $clean_normalized_str = str_replace("\r","\n",$normalized_str);
-
-            //clear out newlines
-            $newlines_removed_str = str_replace("\n"," ",$clean_normalized_str);
-
-            if(strlen($newlines_removed_str)>0){ 
-                $words = explode(" ",$newlines_removed_str);
+            if(strlen(trim($filestring))>0){ 
+                $words = explode(" ",$filestring);
                 foreach($words as $word){
-                    if(strlen($word)>0){
+                    if(strlen(trim($word))>0){
                         $wordcount++;
                     }
                 }
@@ -162,15 +152,13 @@ class CCWC {
     }
 
     //direct php call methods
-    function php_get_wordcount($filename) {
+    function php_get_wordcount($wordcount, $filestring) {
         //Simpler way using str_word_count()
         //
         // expected result from cc text.txt = 58164 
 
-        $wordcount = 0;
-        while($str = fread($this->file,self::FILECHUNKSIZE)){
-            $wordcount += str_word_count($str);
-        }
+            $wordcount += str_word_count($filestring);
+        
         return $wordcount;
     }
 
