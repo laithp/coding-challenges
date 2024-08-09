@@ -22,7 +22,7 @@ class CCWC {
 
     function __construct($argc, $argv)
     {
-        echo $argc."\n";
+       // echo $argc."\n";
 
         if($argc<2){
             //$filename = $argv[2];
@@ -121,9 +121,10 @@ class CCWC {
         //
         // NOTE: - simpler way ? -
         
-            $pieces = explode("\n",$filestring);
-            $linecount = $linecount + count($pieces) - 1 ; // subtracting 1 fixes for an overcount condition
-    
+            //$pieces = explode("\n",$filestring);
+           // $linecount = $linecount + count($pieces) - 1 ; // subtracting 1 fixes for an overcount condition
+            $linecount++;
+
         return $linecount;
     }
 
