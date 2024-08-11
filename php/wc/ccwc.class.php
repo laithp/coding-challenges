@@ -20,9 +20,15 @@ class CCWC {
     public $wordsflag = false;
     public $wordcount = 0;
 
-    function __construct($argc, $argv)
+    function __construct()
     {
 
+
+       
+        
+    }
+
+    function process($argc, $argv) {
         if($argc<2){
             $this->set_all_flags();
             $this->file = STDIN;
@@ -68,8 +74,6 @@ class CCWC {
             echo " ";
         }
         //echo $filename;
-       
-        
     }
 
     function parse_flags($param){
