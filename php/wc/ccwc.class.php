@@ -8,7 +8,6 @@
 class CCWC
 {
 
-    const FILECHUNKSIZE = 100000;
 
     public $file = null;
 
@@ -43,7 +42,6 @@ class CCWC
         //$this->file = fopen($filename,"r");
 
         while ($filestring = fgets($this->file)) {
-            //while($filestring = fread($this->file,self::FILECHUNKSIZE)){
 
             if ($this->bytesflag || $this->charsflag) {
                 $this->bytecount = $this->get_bytecount($this->bytecount, $filestring);
