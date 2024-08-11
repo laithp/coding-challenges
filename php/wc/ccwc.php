@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ccwc - A PHP implementation of the coding challenges "Build Your Own wc Tool"
  * 
@@ -7,8 +8,8 @@
  * 
  */
 
- 
- require('ccwc.class.php');
 
- $ccwc = new CCWC();
- $ccwc->process($argc,$argv);
+require('ccwc.class.php');
+
+$ccwc = new CCWC();
+$ccwc->process($argc, $argv);
