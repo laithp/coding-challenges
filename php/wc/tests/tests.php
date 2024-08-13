@@ -25,3 +25,9 @@ $tests->testDescription('Test get_wordcount with simple string');
     $result = $ccwc->get_wordcount($startcount, $simple_teststring);
 $tests->assertEqual(5,$result);
 
+$tests->testDescription('Test linecount - this one is kinda silly');
+    $result = $ccwc->get_linecount($startcount,$simple_teststring);
+$tests->assertEqual(1,$result);
+
+$tests->summary();
+
