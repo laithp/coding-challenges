@@ -4,6 +4,8 @@ class UnitFramework
 {
 
     public $classname = null;
+
+    public $teststrings = null;
     public $testcount = 0;
     public $pass = 0;
     public $fail = 0;
@@ -15,39 +17,49 @@ class UnitFramework
         $this->classname = $name;
     }
 
-    function summary() {
-        echo "===================\n";
-        echo "  TESTS COMPLETED  \n";
-        echo " Tests Run: ".$this->testcount."\n";
-        echo " Pass: ".$this->pass." Fail: ".$this->fail."\n";
+    function summary()
+    {
+        $this->teststrings .= "===================\n";
+        $this->teststrings .= "  TESTS COMPLETED  \n";
+        $this->teststrings .= "===================\n";
+        $this->teststrings .= " Tests Run: " . $this->testcount . "\n";
+        $this->teststrings .= " Pass: " . $this->pass . " Fail: " . $this->fail . "\n";
+
+        echo $this->teststrings;
     }
 
     function testDescription($description)
     {
-        $this->testdescription = $description;
+        $this->testcount++;
+        
+        $this->teststrings .= $description;
     }
 
+    function testResults($resultsbool){
+         $this->teststrings .= ($resultsbool)?": PASS!\n\n":": !FAIL!\n\n";
+         ($resultsbool)?$this->pass++:$this->fail++;
+    }
     function testPass()
     {
         $this->pass++;
-        echo $this->testdescription . "\n";
-        echo "PASS!\n\n";
+        $this->teststrings .= ": PASS!\n\n";
     }
     function testFail($message)
     {
         $this->fail++;
-        echo $this->testdescription . "\n";
-        echo "FAIL!\n";
-        echo $message;
+        $this->teststrings .=  ": FAIL!\n";
+        $this->teststrings .=  $message;
     }
 
     function assertEqual($expected, $actual)
     {
-        $this->testcount++;
         if ($expected == $actual) {
-            $this->testPass();
+            //$this->testPass();
+            return true;
         } else {
-            $this->testFail("Expected: " . $expected . "\nActual: " . $actual . "\n\n");
+            $this->teststrings .= "Expected: " . $expected . " Actual: " . $actual . "\n\n";
+            return false;
+            
         }
     }
 }
