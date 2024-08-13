@@ -15,6 +15,13 @@ class UnitFramework
         $this->classname = $name;
     }
 
+    function summary() {
+        echo "===================\n";
+        echo "  TESTS COMPLETED  \n";
+        echo " Tests Run: ".$this->testcount."\n";
+        echo " Pass: ".$this->pass." Fail: ".$this->fail."\n";
+    }
+
     function testDescription($description)
     {
         $this->testdescription = $description;

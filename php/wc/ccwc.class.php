@@ -8,7 +8,6 @@
 class CCWC
 {
 
-
     public $file = null;
 
     public $bytesflag = false;
@@ -22,6 +21,8 @@ class CCWC
     public $wordcount = 0;
 
     function __construct() {}
+
+    
 
     function process($argc, $argv)
     {
@@ -69,6 +70,7 @@ class CCWC
         }
         //echo $filename;
     }
+    
 
     function parse_flags($param)
     {
