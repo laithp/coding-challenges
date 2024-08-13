@@ -20,12 +20,15 @@ class CCWC
     public $wordsflag = false;
     public $wordcount = 0;
 
+    public $outputarray = array();
+
     function __construct() {}
 
     
 
     function process($argc, $argv)
     {
+        $filename=null;
         if ($argc < 2) {
             $this->set_all_flags();
             $this->file = STDIN;
@@ -34,10 +37,12 @@ class CCWC
                 $this->file = STDIN;
             } else {
                 $this->file = fopen($argv[1], "r");
+                $filename = $argv[1];
             }
         } else {
             $this->parse_flags($argv[1]);
             $this->file = fopen($argv[2], "r");
+            $filename = $argv[2];
         }
 
         //$this->file = fopen($filename,"r");
@@ -46,31 +51,37 @@ class CCWC
 
             if ($this->bytesflag || $this->charsflag) {
                 $this->bytecount = $this->get_bytecount($this->bytecount, $filestring);
+                $this->outputarray['bytecount'] = $this->bytecount;
             }
             if ($this->linesflag) {
                 $this->linecount = $this->get_linecount($this->linecount, $filestring);
+                $this->outputarray['linecount'] = $this->linecount;
             }
             if ($this->wordsflag) {
                 $this->wordcount = $this->get_wordcount($this->wordcount, $filestring);
+                $this->outputarray['wordcount'] = $this->wordcount;
                 //$this->wordcount = $this->php_get_wordcount($this->wordcount, $filestring);
             }
         }
 
-        if ($this->bytesflag || $this->charsflag) {
-            echo $this->bytecount;
-            echo " ";
+        /*if ($this->bytesflag || $this->charsflag) {
+           $this->outputarray[] = $this->bytecount;
         }
         if ($this->linesflag) {
-            echo $this->linecount;
-            echo " ";
+            $this->outputarray[] = $this->linecount;
         }
         if ($this->wordsflag) {
-            echo $this->wordcount;
-            echo " ";
+            $this->outputarray[] =  $this->wordcount;
+        }*/
+        if($filename){
+            $this->outputarray['filename'] =  $filename;
         }
         //echo $filename;
     }
     
+    function output(){
+        echo join(" ",$this->outputarray);
+    }
 
     function parse_flags($param)
     {

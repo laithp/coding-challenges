@@ -13,3 +13,4 @@ require('ccwc.class.php');
 
 $ccwc = new CCWC();
 $ccwc->process($argc, $argv);
+$ccwc->output();
